@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "two-tier-app.fullname" . }}-flask
+  labels:
+    {{- include "two-tier-app.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.flask.service.type }}
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    tier: web
+  ports:
+    - port: {{ .Values.flask.service.port }}
+      targetPort: 5000
+      {{- if eq .Values.flask.service.type "NodePort" }}
+      nodePort: {{ .Values.flask.service.nodePort }}
+      {{- end }}

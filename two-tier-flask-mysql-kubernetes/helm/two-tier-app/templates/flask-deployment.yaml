@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "two-tier-app.fullname" . }}-flask
+  labels:
+    {{- include "two-tier-app.labels" . | nindent 4 }}
+    tier: web
+spec:
+  replicas: {{ .Values.flask.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      tier: web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        tier: web
+    spec:
+      containers:
+        - name: flask
+          image: "{{ .Values.flask.image.repository }}:{{ .Values.flask.image.tag }}"
+          imagePullPolicy: {{ .Values.flask.image.pullPolicy }}
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: {{ include "two-tier-app.fullname" . }}-config
+          env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "two-tier-app.fullname" . }}-secret
+                  key: MYSQL_PASSWORD
+          resources:
+            {{- toYaml .Values.flask.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20

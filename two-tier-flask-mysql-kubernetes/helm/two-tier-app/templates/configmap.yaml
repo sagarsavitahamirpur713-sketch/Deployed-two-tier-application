@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "two-tier-app.fullname" . }}-config
+  labels:
+    {{- include "two-tier-app.labels" . | nindent 4 }}
+data:
+  MYSQL_HOST: {{ include "two-tier-app.fullname" . }}-mysql
+  MYSQL_DB: {{ .Values.config.dbName | quote }}
+  MYSQL_USER: {{ .Values.config.dbUser | quote }}
+  MYSQL_PORT: {{ .Values.mysql.service.port | quote }}

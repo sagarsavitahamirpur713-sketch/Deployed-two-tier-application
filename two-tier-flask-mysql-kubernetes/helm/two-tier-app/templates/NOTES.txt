@@ -1,0 +1,9 @@
+Release {{ .Release.Name }} installed.
+
+Open the app:
+{{- if eq .Values.flask.service.type "NodePort" }}
+  minikube service {{ include "two-tier-app.fullname" . }}-flask --url
+  (or http://<node-ip>:{{ .Values.flask.service.nodePort }})
+{{- else }}
+  kubectl port-forward svc/{{ include "two-tier-app.fullname" . }}-flask 8080:{{ .Values.flask.service.port }}
+{{- end }}

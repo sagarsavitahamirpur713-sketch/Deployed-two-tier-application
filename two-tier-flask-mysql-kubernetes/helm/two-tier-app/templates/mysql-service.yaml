@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "two-tier-app.fullname" . }}-mysql
+  labels:
+    {{- include "two-tier-app.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    tier: database
+  ports:
+    - port: {{ .Values.mysql.service.port }}
+      targetPort: 3306

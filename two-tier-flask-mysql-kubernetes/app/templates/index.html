@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two-Tier Flask + MySQL</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 1.5rem; }
+    form { display: flex; gap: 8px; margin-bottom: 24px; }
+    input[type=text] { flex: 1; padding: 8px; }
+    button { padding: 8px 16px; cursor: pointer; }
+    li { padding: 6px 0; border-bottom: 1px solid #ddd; }
+    small { color: #777; }
+  </style>
+</head>
+<body>
+  <h1>Two-Tier App: Flask + MySQL on Kubernetes</h1>
+  <form action="/add" method="post">
+    <input type="text" name="content" placeholder="Write a message..." required maxlength="255">
+    <button type="submit">Add</button>
+  </form>
+  <ul>
+    {% for m in messages %}
+      <li>{{ m.content }} <small>({{ m.created_at }})</small></li>
+    {% else %}
+      <li>No messages yet.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

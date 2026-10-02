@@ -1,0 +1,36 @@
+flask:
+  replicaCount: 2
+  image:
+    repository: flask-mysql-app
+    tag: "1.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30007
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits: { cpu: 300m, memory: 256Mi }
+
+mysql:
+  image:
+    repository: mysql
+    tag: "8.0"
+  service:
+    port: 3306
+  persistence:
+    size: 1Gi
+    storageClass: ""
+  resources:
+    requests: { cpu: 250m, memory: 512Mi }
+    limits: { cpu: 500m, memory: 1Gi }
+
+config:
+  dbName: flaskdb
+  dbUser: flaskuser
+
+# Demo only. Override at install time:
+#   helm install app ./helm/two-tier-app --set secret.rootPassword=... --set secret.userPassword=...
+secret:
+  rootPassword: rootpass
+  userPassword: flaskpass
